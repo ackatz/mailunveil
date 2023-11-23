@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Meta Description -->
+    <meta
+      name="description"
+      content="MailUnveil is a free e-mail reputation API. Enter an e-mail address to check its reputation."
+    />
+    <!-- Meta Tags -->
+    <meta name="author" content="MailUnveil" />
+    <meta name="keywords" content="mailunveil, email, reputation, api" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+
+    <!-- Favicons -->
+    <link
+      rel="icon"
+      href="/app/static/favicon.ico"
+      type="image/x-icon"
+    />
+
+
+    <!-- Open Graph Tags for Facebook and LinkedIn -->
+    <meta
+      property="og:title"
+      content="MailUnveil.com: Free Email Reputation API"
+    />
+    <meta
+      property="og:description"
+      content="MailUnveil is a free e-mail reputation API. Enter an e-mail address to check its reputation."
+    />
+    <meta
+      property="og:type"
+      content="website"
+    />
+    <meta
+      property="og:url"
+      content="https://mailunveil.com"
+    />
+    <meta
+      property="og:site_name"
+      content="MailUnveil"
+    />
+
+    <!-- Twitter Card Tags -->
+    <meta
+      name="twitter:card"
+      content="summary"
+    />
+    <meta
+      name="twitter:title"
+      content="MailUnveil.com: Free Email Reputation API"
+    />
+    <meta
+      name="twitter:description"
+      content="MailUnveil is a free e-mail reputation API. Enter an e-mail address to check its reputation."
+    />
+
+    <title>MailUnveil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
+    <style>
+      .custom-code {
+        background-color: #111827; /* Dark background */
+        color: #f8f8f2; /* Light text */
+        padding: 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        font-family: "Fira Code", "Consolas", monospace;
+        white-space: pre-wrap;
+        text-align: left; /* Align text to the left */
+      }
+    </style>
+
+    <script src="https://cdn.counter.dev/script.js" data-id="bb924a97-31a1-4dfb-8076-3b1073b0ce8d" data-utcoffset="-7"></script>
+
+  </head>
+  <body class="bg-gray-900 text-white">
+    <div class="flex items-center justify-center mt-8">
+      <div class="text-center">
+        <a href="/">
+          <h1 class="text-4xl font-bold text-white mb-4">MailUnveil</h1>
+        </a>
+        <p class="text-gray-200 mb-4">
+          Enter an email address to check its reputation.
+        </p>
+
+        <!-- Documentation Link -->
+        <p class="text-gray-400 hover:text-gray-300 mb-6">
+          <a
+            href="/docs"
+            class="flex items-center justify-center text-sm md:text-base transition duration-300 ease-in-out"
+          >
+            API Documentation
+          </a>
+        </p>
+
+        <form
+          class="flex justify-center"
+          hx-post="/index_check"
+          hx-target-error="#any-errors"
+          hx-target="#response"
+          hx-trigger="submit"
+          hx-swap="innerHTML from:response"
+          hx-vals='javascript:{"#response.innerHTML":"", "#any-errors.innerHTML":""}'
+        >
+          <div class="flex border-2 border-white-700 rounded">
+            <input
+              type="text"
+              name="email"
+              class="px-4 py-2 w-80 text-white bg-gray-800"
+              placeholder="Enter email address..."
+              required
+            />
+            <button
+              type="submit"
+              class="flex items-center justify-center px-4 border-l bg-gray-800 text-white"
+            >
+              Check
+            </button>
+          </div>
+        </form>
+
+        <div hx-ext="response-targets">
+          <div class="max-w-4xl mx-auto p-4">
+            <pre
+              id="response"
+              class="custom-code mt-6 hidden overflow-x-auto"
+            ></pre>
+          </div>
+
+          <div class="max-w-4xl mx-auto p-4">
+            <pre
+              id="any-errors"
+              class="custom-code mt-6 hidden overflow-x-auto"
+            ></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.body.addEventListener("htmx:beforeRequest", function (event) {
+        var responseElement = document.getElementById("response");
+        var errorElement = document.getElementById("any-errors");
+
+        if (responseElement) {
+          responseElement.innerText = "";
+          responseElement.classList.add("hidden");
+        }
+        if (errorElement) {
+          errorElement.innerText = "";
+          errorElement.classList.add("hidden");
+        }
+      });
+
+      document.body.addEventListener("htmx:afterSwap", function (event) {
+        var responseElement = document.getElementById("response");
+        var errorElement = document.getElementById("any-errors");
+
+        if (responseElement && responseElement.innerText.trim() !== "") {
+          responseElement.classList.remove("hidden");
+        }
+        if (errorElement && errorElement.innerText.trim() !== "") {
+          errorElement.classList.remove("hidden");
+        }
+      });
+    </script>
+  </body>
+</html>

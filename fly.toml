@@ -1,0 +1,21 @@
+# fly.toml app configuration file generated for mailunveil on 2023-11-07T14:15:58-07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "mailunveil"
+primary_region = "den"
+
+[build]
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 2000
+    hard_limit = 2200
